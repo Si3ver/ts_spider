@@ -17,11 +17,19 @@ interface Content {
 }
 
 export default class DellAnalyzer implements Analyzer {
+  private static instance: DellAnalyzer;
+
+  static getInstance() {
+    if (!DellAnalyzer.instance) {
+      DellAnalyzer.instance = new DellAnalyzer();
+    }
+    return DellAnalyzer.instance;
+  }
   /**
    * 提取课程信息快照
    * @param html 要解析的html结构
    */
-  getCourseInfo(html: string): CourseResult {
+  private getCourseInfo(html: string): CourseResult {
     const $ = cheerio.load(html);
     const courseItems = $(".course-item");
     const courseInfos: Course[] = [];
@@ -37,7 +45,7 @@ export default class DellAnalyzer implements Analyzer {
     };
   }
 
-  generateJsonContent(courseInfo: CourseResult, filePath: string) {
+  private generateJsonContent(courseInfo: CourseResult, filePath: string) {
     let fileContent: Content = {};
     if (fs.existsSync(filePath)) {
       fileContent = JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -51,4 +59,6 @@ export default class DellAnalyzer implements Analyzer {
     const fileContent = this.generateJsonContent(courseInfo, filePath);
     return JSON.stringify(fileContent);
   }
+
+  private constructor() {}
 }

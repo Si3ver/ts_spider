@@ -16,7 +16,7 @@ class Crawler {
     this.initCrawlerProcess();
   }
 
-  async initCrawlerProcess() {
+  private async initCrawlerProcess() {
     const html = await this.getRawHtml();
     const fileContent = this.analyzer.analyze(html, this.filePath);
     this.writeFile(fileContent);
@@ -25,12 +25,12 @@ class Crawler {
   /**
    * 爬取 html
    */
-  async getRawHtml() {
+  private async getRawHtml() {
     const result = await superaget.get(this.url);
     return result.text;
   }
 
-  writeFile(content: string) {
+  private writeFile(content: string) {
     fs.writeFileSync(this.filePath, content);
   }
 }
@@ -38,5 +38,5 @@ class Crawler {
 const secret = "x3b174jsx";
 const url = `http://www.dell-lee.com/typescript/demo.html?secret=${secret}`;
 
-const analyzer = new DellAnalyzer();
+const analyzer = DellAnalyzer.getInstance();
 const crawler = new Crawler(url, analyzer);
